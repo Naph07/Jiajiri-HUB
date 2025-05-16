@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <%- include('partials/head') %>
+  <title><%= title %></title>
+</head>
+<body class="bg-gray-50">
+  <%- include('partials/navbar') %>
+
+  <div class="container mx-auto px-4 py-8">
+    <h1 class="text-3xl font-bold mb-6">Admin Dashboard</h1>
+    
+    <!-- Stats Cards -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+      <div class="bg-white rounded-lg shadow-md p-6">
+        <div class="flex items-center">
+          <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mr-4">
+            <i class="fas fa-hard-hat text-blue-600 text-xl"></i>
+          </div>
+          <div>
+            <h3 class="text-gray-500 text-sm">Workers</h3>
+            <p class="text-2xl font-bold"><%= counts.worker_count %></p>
+          </div>
+        </div>
+      </div>
+      
+      <div class="bg-white rounded-lg shadow-md p-6">
+        <div class="flex items-center">
+          <div class="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mr-4">
+            <i class="fas fa-users text-green-600 text-xl"></i>
+          </div>
+          <div>
+            <h3 class="text-gray-500 text-sm">Clients</h3>
+            <p class="text-2xl font-bold"><%= counts.client_count %></p>
+          </div>
+        </div>
+      </div>
+      
+      <div class="bg-white rounded-lg shadow-md p-6">
+        <div class="flex items-center">
+          <div class="w-12 h-12 bg-yellow-100 rounded-full flex items-center justify-center mr-4">
+            <i class="fas fa-clipboard-list text-yellow-600 text-xl"></i>
+          </div>
+          <div>
+            <h3 class="text-gray-500 text-sm">Total Jobs</h3>
+            <p class="text-2xl font-bold"><%= counts.job_count %></p>
+          </div>
+        </div>
+      </div>
+      
+      <div class="bg-white rounded-lg shadow-md p-6">
+        <div class="flex items-center">
+          <div class="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center mr-4">
+            <i class="fas fa-check-circle text-purple-600 text-xl"></i>
+          </div>
+          <div>
+            <h3 class="text-gray-500 text-sm">Completed Jobs</h3>
+            <p class="text-2xl font-bold"><%= counts.completed_job_count %></p>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+      <!-- Unverified Workers -->
+      <div class="bg-white rounded-lg shadow-md p-6">
+        <h2 class="text-xl font-semibold mb-4">Workers Pending Verification</h2>
+        
+        <% if (unverifiedWorkers.length === 0) { %>
+          <div class="text-center py-8 text-gray-500">
+            <i class="fas fa-check-circle text-4xl mb-3"></i>
+            <p>No workers pending verification</p>
+          </div>
+        <% } else { %>
+          <div class="overflow-x-auto">
+            <table class="min-w-full">
+              <thead>
+                <tr class="bg-gray-50">
+                  <th class="px-4 py-2 text-left text-gray-700">Name</th>
+                  <th class="px-4 py-2 text-left text-gray-700">ID Number</th>
+                  <th class="px-4 py-2 text-left text-gray-700">Service</th>
+                  <th class="px-4 py-2 text-left text-gray-700">Actions</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y">
+                <% unverifiedWorkers.forEach(worker => { %>
+                  <tr>
+                    <td class="px-4 py-3"><%= worker.name %></td>
+                    <td class="px-4 py-3"><%= worker.id_number %></td>
+                    <td class="px-4 py-3"><%= worker.service_category %></td>
+                    <td class="px-4 py-3">
+                      <form action="/admin/verify/<%= worker.id %>" method="POST">
+                        <button type="submit" class="bg-green-600 hover:bg-green-700 text-white px-3 py-1 rounded-md text-sm transition duration-300">Verify</button>
+                      </form>
+                    </td>
+                  </tr>
+                <% }) %>
+              </tbody>
+            </table>
+          </div>
+        <% } %>
+      </div>
+      
+      <!-- Recent Users -->
+      <div class="bg-white rounded-lg shadow-md p-6">
+        <h2 class="text-xl font-semibold mb-4">Recent Users</h2>
+        
+        <div class="overflow-x-auto">
+          <table class="min-w-full">
+            <thead>
+              <tr class="bg-gray-50">
+                <th class="px-4 py-2 text-left text-gray-700">Name</th>
+                <th class="px-4 py-2 text-left text-gray-700">Email</th>
+                <th class="px-4 py-2 text-left text-gray-700">Role</th>
+                <th class="px-4 py-2 text-left text-gray-700">Joined</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y">
+              <% recentUsers.forEach(user => { %>
+                <tr>
+                  <td class="px-4 py-3"><%= user.name %></td>
+                  <td class="px-4 py-3"><%= user.email %></td>
+                  <td class="px-4 py-3">
+                    <span class="<%= user.role === 'worker' ? 'bg-blue-100 text-blue-800' : user.role === 'client' ? 'bg-green-100 text-green-800' : 'bg-purple-100 text-purple-800' %> px-2 py-1 rounded-full text-xs">
+                      <%= user.role.charAt(0).toUpperCase() + user.role.slice(1) %>
+                    </span>
+                  </td>
+                  <td class="px-4 py-3"><%= new Date(user.created_at).toLocaleDateString() %></td>
+                </tr>
+              <% }) %>
+            </tbody>
+          </table>
+        </div>
+        
+        <div class="mt-4 text-right">
+          <a href="/admin/users" class="text-green-600 hover:text-green-700 font-medium">View All Users</a>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Recent Job Requests -->
+    <div class="bg-white rounded-lg shadow-md p-6 mt-8">
+      <h2 class="text-xl font-semibold mb-4">Recent Job Requests</h2>
+      
+      <div class="overflow-x-auto">
+        <table class="min-w-full">
+          <thead>
+            <tr class="bg-gray-50">
+              <th class="px-4 py-2 text-left text-gray-700">Client</th>
+              <th class="px-4 py-2 text-left text-gray-700">Worker</th>
+              <th class="px-4 py-2 text-left text-gray-700">Description</th>
+              <th class="px-4 py-2 text-left text-gray-700">Status</th>
+              <th class="px-4 py-2 text-left text-gray-700">Date</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y">
+            <% recentJobs.forEach(job => { %>
+              <tr>
+                <td class="px-4 py-3"><%= job.client_name %></td>
+                <td class="px-4 py-3"><%= job.worker_name %></td>
+                <td class="px-4 py-3"><%= job.description.substring(0, 50) %>...</td>
+                <td class="px-4 py-3">
+                  <span class="<%= job.status === 'pending' ? 'bg-yellow-100 text-yellow-800' : job.status === 'accepted' ? 'bg-blue-100 text-blue-800' : job.status === 'completed' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' %> px-2 py-1 rounded-full text-xs">
+                    <%= job.status.charAt(0).toUpperCase() + job.status.slice(1) %>
+                  </span>
+                </td>
+                <td class="px-4 py-3"><%= new Date(job.created_at).toLocaleDateString() %></td>
+              </tr>
+            <% }) %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <%- include('partials/footer') %>
+</body>
+</html>

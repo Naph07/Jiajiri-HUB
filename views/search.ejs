@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <%- include('partials/head') %>
+  <title><%= title %></title>
+</head>
+<body class="bg-gray-50">
+  <%- include('partials/navbar') %>
+
+  <div class="container mx-auto px-4 py-8">
+    <h1 class="text-3xl font-bold mb-6">Find Service Providers</h1>
+    
+    <!-- Search Form -->
+    <div class="bg-white rounded-lg shadow-md p-6 mb-8">
+      <form action="/search" method="GET" class="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <div class="md:col-span-2">
+          <label for="q" class="block text-gray-700 font-medium mb-2">Search</label>
+          <input type="text" id="q" name="q" value="<%= searchQuery %>" placeholder="Search by name or service" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500">
+        </div>
+        
+        <div>
+          <label for="category" class="block text-gray-700 font-medium mb-2">Category</label>
+          <select id="category" name="category" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500">
+            <option value="">All Categories</option>
+            <% categories.forEach(category => { %>
+              <option value="<%= category.name %>" <%= selectedCategory === category.name ? 'selected' : '' %>><%= category.name %></option>
+            <% }) %>
+          </select>
+        </div>
+        
+        <div>
+          <label for="location" class="block text-gray-700 font-medium mb-2">Location</label>
+          <input type="text" id="location" name="location" value="<%= selectedLocation %>" placeholder="Enter location" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500">
+        </div>
+        
+        <div class="md:col-span-4 flex justify-end">
+          <button type="submit" class="bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-6 rounded-md transition duration-300">Search</button>
+        </div>
+      </form>
+    </div>
+    
+    <!-- Search Results -->
+    <div class="bg-white rounded-lg shadow-md p-6">
+      <h2 class="text-xl font-semibold mb-4">Search Results</h2>
+      
+      <% if (workers.length === 0) { %>
+        <div class="text-center py-12 text-gray-500">
+          <i class="fas fa-search text-5xl mb-4"></i>
+          <p class="text-xl mb-2">No workers found</p>
+          <p>Try adjusting your search criteria</p>
+        </div>
+      <% } else { %>
+        <p class="text-gray-600 mb-6">Found <%= workers.length %> service providers</p>
+        
+        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <% workers.forEach(worker => { %>
+            <div class="border border-gray-200 rounded-lg overflow-hidden shadow-sm hover:shadow-md transition duration-300">
+              <div class="h-48 bg-gray-200 relative">
+                <% if (worker.image_url) { %>
+                  <img src="<%= worker.image_url %>" alt="<%= worker.name %>" class="w-full h-full object-cover">
+                <% } else { %>
+                  <div class="w-full h-full flex items-center justify-center">
+                    <i class="fas fa-user text-gray-400 text-5xl"></i>
+                  </div>
+                <% } %>
+                <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black to-transparent p-4">
+                  <h3 class="text-white text-lg font-semibold"><%= worker.name %></h3>
+                  <p class="text-white opacity-90"><%= worker.service_category %></p>
+                </div>
+              </div>
+              <div class="p-4">
+                <div class="flex items-center mb-3">
+                  <div class="flex text-yellow-400">
+                    <% for (let i = 1; i <= 5; i++) { %>
+                      <% if (i <= Math.round(worker.average_rating)) { %>
+                        <i class="fas fa-star"></i>
+                      <% } else { %>
+                        <i class="far fa-star"></i>
+                      <% } %>
+                    <% } %>
+                  </div>
+                  <span class="text-gray-600 ml-2"><%= worker.average_rating.toFixed(1) %> (<%= worker.review_count %> reviews)</span>
+                </div>
+                <p class="text-gray-600 mb-4"><%= worker.bio ? worker.bio.substring(0, 100) + '...' : 'No bio available' %></p>
+                <div class="flex items-center justify-between">
+                  <span class="text-gray-700 font-medium"><%= worker.price_range %></span>
+                  <a href="/worker/<%= worker.id %>" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-md font-medium transition duration-300">View Profile</a>
+                </div>
+              </div>
+            </div>
+          <% }) %>
+        </div>
+      <% } %>
+    </div>
+  </div>
+
+  <%- include('partials/footer') %>
+</body>
+</html>

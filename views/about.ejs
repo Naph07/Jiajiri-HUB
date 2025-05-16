@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <%- include('partials/head') %>
+  <title><%= title %></title>
+</head>
+<body class="bg-gray-50">
+  <%- include('partials/navbar') %>
+
+  <div class="container mx-auto px-4 py-12">
+    <!-- Hero Section -->
+    <div class="bg-white rounded-lg shadow-md overflow-hidden mb-12">
+      <div class="bg-gradient-to-r from-green-600 to-teal-500 text-white py-16 px-8 text-center">
+        <h1 class="text-4xl font-bold mb-4">About Jiajiri Hub</h1>
+        <p class="text-xl max-w-3xl mx-auto">Connecting skilled workers with clients in Kenya's informal sector</p>
+      </div>
+      
+      <div class="p-8">
+        <div class="max-w-4xl mx-auto">
+          <h2 class="text-2xl font-bold mb-4">Our Mission</h2>
+          <p class="text-gray-600 mb-6">
+            Jiajiri Hub was created to bridge the gap between skilled informal workers and potential clients in Kenya. 
+            Our mission is to empower local service providers by giving them a digital platform to showcase their skills, 
+            while making it easier for clients to find reliable, verified professionals for their service needs.
+          </p>
+          
+          <h2 class="text-2xl font-bold mb-4">The Problem We're Solving</h2>
+          <p class="text-gray-600 mb-6">
+            In Kenya, millions of skilled workers in the informal sector struggle to find consistent work and rely heavily on 
+            word-of-mouth referrals. Meanwhile, clients have difficulty finding trustworthy service providers for their needs. 
+            Jiajiri Hub addresses both sides of this challenge by creating a transparent, accessible platform that connects 
+            workers with clients in their local area.
+          </p>
+          
+          <h2 class="text-2xl font-bold mb-4">How It Works</h2>
+          <div class="grid md:grid-cols-3 gap-8 mb-8">
+            <div class="bg-gray-50 p-6 rounded-lg text-center">
+              <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <i class="fas fa-user-plus text-green-600 text-xl"></i>
+              </div>
+              <h3 class="text-xl font-semibold mb-3">1. Create a Profile</h3>
+              <p class="text-gray-600">Workers create detailed profiles showcasing their skills, experience, and availability.</p>
+            </div>
+            <div class="bg-gray-50 p-6 rounded-lg text-center">
+              <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <i class="fas fa-search text-green-600 text-xl"></i>
+              </div>
+              <h3 class="text-xl font-semibold mb-3">2. Search & Connect</h3>
+              <p class="text-gray-600">Clients search for workers based on service type, location, and ratings.</p>
+            </div>
+            <div class="bg-gray-50 p-6 rounded-lg text-center">
+              <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <i class="fas fa-handshake text-green-600 text-xl"></i>
+              </div>
+              <h3 class="text-xl font-semibold mb-3">3. Work & Review</h3>
+              <p class="text-gray-600">After service completion, clients leave reviews to build worker reputation.</p>
+            </div>
+          </div>
+          
+          <h2 class="text-2xl font-bold mb-4">Our Values</h2>
+          <ul class="list-disc pl-6 text-gray-600 mb-8">
+            <li class="mb-2"><strong>Trust and Transparency:</strong> We verify worker identities and encourage honest reviews.</li>
+            <li class="mb-2"><strong>Economic Empowerment:</strong> We help skilled workers increase their visibility and income potential.</li>
+            <li class="mb-2"><strong>Community Building:</strong> We strengthen local economies by connecting neighbors with nearby service providers.</li>
+            <li class="mb-2"><strong>Accessibility:</strong> We make it easy for anyone to find quality services, regardless of their location.</li>
+          </ul>
+          
+          <h2 class="text-2xl font-bold mb-4">Our Team</h2>
+          <p class="text-gray-600 mb-8">
+            Jiajiri Hub was founded by a team of Kenyan entrepreneurs passionate about using technology to solve local challenges. 
+            Our diverse team brings together expertise in technology, business development, and community engagement to create 
+            a platform that truly serves the needs of Kenya's informal workforce.
+          </p>
+        </div>
+      </div>
+    </div>
+    
+    <!-- CTA Section -->
+    <div class="bg-green-600 text-white rounded-lg shadow-md p-8 text-center">
+      <h2 class="text-3xl font-bold mb-4">Join Jiajiri Hub Today</h2>
+      <p class="text-xl mb-6 max-w-3xl mx-auto">Whether you're looking for work or need to hire skilled professionals, Jiajiri Hub connects you with the right people.</p>
+      <div class="flex flex-col sm:flex-row gap-4 justify-center">
+        <a href="/register" class="bg-white text-green-600 hover:bg-gray-100 font-semibold py-3 px-8 rounded-md transition duration-300">Sign Up Now</a>
+        <a href="/contact" class="bg-transparent border-2 border-white text-white hover:bg-white hover:text-green-600 font-semibold py-3 px-8 rounded-md transition duration-300">Contact Us</a>
+      </div>
+    </div>
+  </div>
+
+  <%- include('partials/footer') %>
+</body>
+</html>

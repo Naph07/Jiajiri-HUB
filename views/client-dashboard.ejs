@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <%- include('partials/head') %>
+  <title><%= title %></title>
+</head>
+<body class="bg-gray-50">
+  <%- include('partials/navbar') %>
+
+  <div class="container mx-auto px-4 py-8">
+    <div class="flex flex-col md:flex-row gap-8">
+      <!-- Sidebar -->
+      <div class="w-full md:w-1/4">
+        <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+          <div class="flex flex-col items-center text-center mb-6">
+            <div class="w-24 h-24 bg-gray-300 rounded-full mb-4 flex items-center justify-center">
+              <i class="fas fa-user text-gray-400 text-4xl"></i>
+            </div>
+            <h2 class="text-xl font-bold"><%= user.name %></h2>
+            <p class="text-gray-600"><%= user.email %></p>
+            <span class="bg-blue-100 text-blue-800 px-2 py-1 rounded-full text-sm mt-2">Client</span>
+          </div>
+        </div>
+        
+        <!-- Recommended Workers -->
+        <div class="bg-white rounded-lg shadow-md p-6">
+          <h3 class="text-lg font-semibold mb-4">Recommended Workers</h3>
+          
+          <div class="space-y-4">
+            <% recentWorkers.forEach(worker => { %>
+              <div class="flex items-center">
+                <div class="w-12 h-12 bg-gray-200 rounded-full overflow-hidden mr-3">
+                  <% if (worker.image_url) { %>
+                    <img src="<%= worker.image_url %>" alt="<%= worker.name %>" class="w-full h-full object-cover">
+                  <% } else { %>
+                    <div class="w-full h-full flex items-center justify-center">
+                      <i class="fas fa-user text-gray-400"></i>
+                    </div>
+                  <% } %>
+                </div>
+                <div>
+                  <h4 class="font-medium"><%= worker.name %></h4>
+                  <p class="text-sm text-gray-600"><%= worker.service_category %></p>
+                  <div class="flex text-yellow-400 text-xs mt-1">
+                    <% for (let i = 1; i <= 5; i++) { %>
+                      <% if (i <= Math.round(worker.average_rating)) { %>
+                        <i class="fas fa-star"></i>
+                      <% } else { %>
+                        <i class="far fa-star"></i>
+                      <% } %>
+                    <% } %>
+                  </div>
+                </div>
+                <a href="/worker/<%= worker.id %>" class="ml-auto text-green-600 hover:text-green-700">
+                  <i class="fas fa-arrow-right"></i>
+                </a>
+              </div>
+            <% }) %>
+          </div>
+          
+          <div class="mt-4 text-center">
+            <a href="/search" class="text-green-600 hover:text-green-700 font-medium">Find More Workers</a>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Main Content -->
+      <div class="w-full md:w-3/4">
+        <!-- Active Requests -->
+        <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+          <h3 class="text-xl font-semibold mb-4">Active Job Requests</h3>
+          
+          <% if (activeRequests.length === 0) { %>
+            <div class="text-center py-8 text-gray-500">
+              <i class="fas fa-clipboard-list text-4xl mb-3"></i>
+              <p>You don't have any active job requests.</p>
+              <a href="/search" class="inline-block mt-4 bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded-md transition duration-300">Find Workers</a>
+            </div>
+          <% } else { %>
+            <div class="grid gap-4">
+              <% activeRequests.forEach(request => { %>
+                <div class="border border-gray-200 rounded-lg p-4">
+                  <div class="flex flex-col md:flex-row md:justify-between md:items-start">
+                    <div class="flex items-start">
+                      <div class="w-12 h-12 bg-gray-200 rounded-full overflow-hidden mr-3">
+                        <% if (request.worker_image) { %>
+                          <img src="<%= request.worker_image %>" alt="<%= request.worker_name %>" class="w-full h-full object-cover">
+                        <% } else { %>
+                          <div class="w-full h-full flex items-center justify-center">
+                            <i class="fas fa-user text-gray-400"></i>
+                          </div>
+                        <% } %>
+                      </div>
+                      <div>
+                        <h4 class="font-semibold"><%= request.worker_name %></h4>
+                        <p class="text-gray-600"><%= request.service_category %></p>
+                      </div>
+                    </div>
+                    
+                    <div class="mt-4 md:mt-0">
+                      <span class="<%= request.status === 'pending' ? 'bg-yellow-100 text-yellow-800' : 'bg-green-100 text-green-800' %> px-2 py-1 rounded-full text-sm">
+                        <%= request.status.charAt(0).toUpperCase() + request.status.slice(1) %>
+                      </span>
+                    </div>
+                  </div>
+                  
+                  <div class="mt-4">
+                    <p class="font-medium">Job Description:</p>
+                    <p class="text-gray-600 mt-1"><%= request.description %></p>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-3">
+                      <div>
+                        <p class="text-gray-600"><i class="fas fa-map-marker-alt mr-2"></i> <%= request.location %></p>
+                      </div>
+                      <div>
+                        <p class="text-gray-600"><i class="fas fa-calendar-alt mr-2"></i> <%= new Date(request.scheduled_time).toLocaleString() %></p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              <% }) %>
+            </div>
+          <% } %>
+        </div>
+        
+        <!-- Completed Jobs -->
+        <div class="bg-white rounded-lg shadow-md p-6">
+          <h3 class="text-xl font-semibold mb-4">Completed Jobs</h3>
+          
+          <% if (completedRequests.length === 0) { %>
+            <div class="text-center py-8 text-gray-500">
+              <i class="fas fa-check-circle text-4xl mb-3"></i>
+              <p>You don't have any completed jobs yet.</p>
+            </div>
+          <% } else { %>
+            <div class="grid gap-4">
+              <% completedRequests.forEach(request => { %>
+                <div class="border border-gray-200 rounded-lg p-4">
+                  <div class="flex flex-col md:flex-row md:justify-between md:items-start">
+                    <div>
+                      <h4 class="font-semibold"><%= request.worker_name %> - <%= request.service_category %></h4>
+                      <p class="text-gray-600 mt-1"><%= request.description.substring(0, 100) %></p>
+                      <p class="text-gray-600">Completed: <%= new Date(request.completed_at).toLocaleDateString() %></p>
+                    </div>
+                    
+                    <div class="mt-4 md:mt-0">
+                      <% if (request.review_id) { %>
+                        <div class="flex items-center">
+                          <div class="flex text-yellow-400">
+                            <% for (let i = 1; i <= 5; i++) { %>
+                              <% if (i <= request.rating) { %>
+                                <i class="fas fa-star"></i>
+                              <% } else { %>
+                                <i class="far fa-star"></i>
+                              <% } %>
+                            <% } %>
+                          </div>
+                          <span class="ml-2">Rated <%= request.rating %>/5</span>
+                        </div>
+                      <% } else { %>
+                        <form action="/review/<%= request.id %>" method="POST" class="bg-gray-50 p-3 rounded-md">
+                          <h5 class="font-medium mb-2">Leave a Review</h5>
+                          <div class="flex items-center mb-2">
+                            <label class="mr-2">Rating:</label>
+                            <div class="flex">
+                              <% for (let i = 1; i <= 5; i++) { %>
+                                <label class="cursor-pointer mx-1">
+                                  <input type="radio" name="rating" value="<%= i %>" class="sr-only" <%= i === 5 ? 'checked' : '' %>>
+                                  <i class="far fa-star text-yellow-400 hover:text-yellow-500"></i>
+                                </label>
+                              <% } %>
+                            </div>
+                          </div>
+                          <textarea name="comment" rows="2" placeholder="Write your review..." class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 mb-2"></textarea>
+                          <button type="submit" class="bg-green-600 hover:bg-green-700 text-white px-3 py-1 rounded-md text-sm transition duration-300">Submit Review</button>
+                        </form>
+                        
+                        <script>
+                          // Simple star rating script
+                          document.querySelectorAll('input[name="rating"]').forEach(input => {
+                            input.addEventListener('change', function() {
+                              const stars = this.parentNode.parentNode.querySelectorAll('i');
+                              const value = parseInt(this.value);
+                              
+                              stars.forEach((star, index) => {
+                                if (index < value) {
+                                  star.classList.remove('far');
+                                  star.classList.add('fas');
+                                } else {
+                                  star.classList.remove('fas');
+                                  star.classList.add('far');
+                                }
+                              });
+                            });
+                          });
+                        </script>
+                      <% } %>
+                    </div>
+                  </div>
+                </div>
+              <% }) %>
+            </div>
+          <% } %>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <%- include('partials/footer') %>
+</body>
+</html>

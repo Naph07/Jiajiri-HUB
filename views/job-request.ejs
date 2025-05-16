@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <%- include('partials/head') %>
+  <title><%= title %></title>
+</head>
+<body class="bg-gray-50">
+  <%- include('partials/navbar') %>
+
+  <div class="container mx-auto px-4 py-8">
+    <div class="max-w-2xl mx-auto bg-white rounded-lg shadow-md overflow-hidden">
+      <div class="bg-green-600 text-white py-4 px-6">
+        <h2 class="text-2xl font-bold">Request Service</h2>
+        <p class="text-green-100">Send a job request to <%= worker.name %></p>
+      </div>
+      
+      <form action="/request/<%= worker.id %>" method="POST" enctype="multipart/form-data" class="p-6">
+        <% if (errors && errors.length > 0) { %>
+          <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
+            <ul class="list-disc pl-4">
+              <% errors.forEach(error => { %>
+                <li><%= error.msg %></li>
+              <% }) %>
+            </ul>
+          </div>
+        <% } %>
+        
+        <div class="flex items-center mb-6">
+          <div class="w-16 h-16 bg-gray-200 rounded-full overflow-hidden mr-4">
+            <% if (worker.image_url) { %>
+              <img src="<%= worker.image_url %>" alt="<%= worker.name %>" class="w-full h-full object-cover">
+            <% } else { %>
+              <div class="w-full h-full flex items-center justify-center">
+                <i class="fas fa-user text-gray-400 text-2xl"></i>
+              </div>
+            <% } %>
+          </div>
+          <div>
+            <h3 class="font-semibold text-lg"><%= worker.name %></h3>
+            <p class="text-gray-600"><%= worker.service_category %></p>
+          </div>
+        </div>
+        
+        <div class="mb-4">
+          <label for="description" class="block text-gray-700 font-medium mb-2">Job Description</label>
+          <textarea id="description" name="description" rows="4" required class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"></textarea>
+          <p class="text-gray-500 text-sm mt-1">Describe what you need done in detail</p>
+        </div>
+        
+        <div class="mb-4">
+          <label for="location" class="block text-gray-700 font-medium mb-2">Location</label>
+          <input type="text" id="location" name="location" required class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500">
+          <p class="text-gray-500 text-sm mt-1">Where the service will be performed</p>
+        </div>
+        
+        <div class="mb-4">
+          <label for="scheduled_time" class="block text-gray-700 font-medium mb-2">Date and Time</label>
+          <input type="datetime-local" id="scheduled_time" name="scheduled_time" required class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500">
+          <p class="text-gray-500 text-sm mt-1">When you need the service</p>
+        </div>
+        
+        <div class="mb-6">
+          <label class="block text-gray-700 font-medium mb-2">Image (Optional)</label>
+          <input type="file" name="job_image" id="job_image" class="hidden" accept="image/*">
+          <label for="job_image" class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-medium py-2 px-4 rounded-md cursor-pointer transition duration-300 inline-block">
+            Upload Image
+          </label>
+          <p class="text-gray-500 text-sm mt-1">You can upload an image to help explain the job</p>
+        </div>
+        
+        <div class="bg-gray-50 p-4 rounded-md mb-6">
+          <h4 class="font-semibold mb-2">Price Range</h4>
+          <p class="text-gray-600"><%= worker.price_range %></p>
+          <p class="text-gray-500 text-sm mt-2">Note: This is the worker's typical price range. The final price may be discussed after they accept your request.</p>
+        </div>
+        
+        <div class="flex justify-end">
+          <a href="/worker/<%= worker.id %>" class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-medium py-2 px-4 rounded-md mr-3 transition duration-300">Cancel</a>
+          <button type="submit" class="bg-green-600 hover:bg-green-700 text-white font-medium py-2 px-4 rounded-md transition duration-300">Send Request</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <%- include('partials/footer') %>
+</body>
+</html>

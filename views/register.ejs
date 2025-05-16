@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <%- include('partials/head') %>
+  <title><%= title %></title>
+</head>
+<body class="bg-gray-50">
+  <%- include('partials/navbar') %>
+
+  <div class="container mx-auto px-4 py-12">
+    <div class="max-w-md mx-auto bg-white rounded-lg shadow-md overflow-hidden">
+      <div class="bg-green-600 text-white py-4 px-6">
+        <h2 class="text-2xl font-bold">Create an Account</h2>
+        <p class="text-green-100">Join Jiajiri Hub today</p>
+      </div>
+      
+      <form action="/register" method="POST" class="p-6">
+        <% if (errors && errors.length > 0) { %>
+          <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
+            <ul class="list-disc pl-4">
+              <% errors.forEach(error => { %>
+                <li><%= error.msg %></li>
+              <% }) %>
+            </ul>
+          </div>
+        <% } %>
+        
+        <div class="mb-4">
+          <label for="name" class="block text-gray-700 font-medium mb-2">Full Name</label>
+          <input type="text" id="name" name="name" value="<%= locals.formData ? formData.name : '' %>" required class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500">
+        </div>
+        
+        <div class="mb-4">
+          <label for="email" class="block text-gray-700 font-medium mb-2">Email Address</label>
+          <input type="email" id="email" name="email" value="<%= locals.formData ? formData.email : '' %>" required class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500">
+        </div>
+        
+        <div class="mb-4">
+          <label for="phone" class="block text-gray-700 font-medium mb-2">Phone Number</label>
+          <input type="tel" id="phone" name="phone" value="<%= locals.formData ? formData.phone : '' %>" required placeholder="+254..." class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500">
+        </div>
+        
+        <div class="mb-4">
+          <label for="password" class="block text-gray-700 font-medium mb-2">Password</label>
+          <input type="password" id="password" name="password" required class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500">
+        </div>
+        
+        <div class="mb-6">
+          <label for="confirmPassword" class="block text-gray-700 font-medium mb-2">Confirm Password</label>
+          <input type="password" id="confirmPassword" name="confirmPassword" required class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500">
+        </div>
+        
+        <div class="mb-6">
+          <label class="block text-gray-700 font-medium mb-2">Account Type</label>
+          <div class="flex space-x-4">
+            <label class="flex items-center">
+              <input type="radio" name="role" value="client" <%= locals.formData && formData.role === 'client' ? 'checked' : '' %> required class="mr-2">
+              <span>I want to hire (Client)</span>
+            </label>
+            <label class="flex items-center">
+              <input type="radio" name="role" value="worker" <%= locals.formData && formData.role === 'worker' ? 'checked' : '' %> required class="mr-2">
+              <span>I want to work (Worker)</span>
+            </label>
+          </div>
+        </div>
+        
+        <button type="submit" class="w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-3 px-4 rounded-md transition duration-300">Create Account</button>
+      </form>
+      
+      <div class="px-6 py-4 bg-gray-50 border-t border-gray-200">
+        <p class="text-center text-gray-600">Already have an account? <a href="/login" class="text-green-600 hover:text-green-700 font-medium">Log in</a></p>
+      </div>
+    </div>
+  </div>
+
+  <%- include('partials/footer') %>
+</body>
+</html>

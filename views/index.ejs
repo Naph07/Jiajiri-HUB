@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <%- include('partials/head') %>
+  <title><%= title %></title>
+</head>
+<body class="bg-gray-50">
+  <%- include('partials/navbar') %>
+
+  <!-- Hero Section -->
+  <section class="relative bg-gradient-to-r from-green-600 to-teal-500 text-white">
+    <div class="absolute inset-0 bg-black opacity-20"></div>
+    <div class="container mx-auto px-4 py-20 md:py-32 relative z-10">
+      <div class="max-w-3xl mx-auto text-center">
+        <h1 class="text-4xl md:text-5xl font-bold mb-6">Find Local Service Providers in Kenya</h1>
+        <p class="text-xl mb-8">Connect with skilled workers in your area for plumbing, electrical work, cleaning, carpentry, and more.</p>
+        <div class="bg-white rounded-lg shadow-lg p-4 md:p-6 max-w-2xl mx-auto">
+          <form action="/search" method="GET" class="flex flex-col md:flex-row gap-4">
+            <div class="flex-1">
+              <input type="text" name="q" placeholder="What service do you need?" class="w-full px-4 py-3 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-green-500 text-gray-800">
+            </div>
+            <div class="flex-1">
+              <input type="text" name="location" placeholder="Your location" class="w-full px-4 py-3 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-green-500 text-gray-800">
+            </div>
+            <button type="submit" class="bg-green-600 hover:bg-green-700 text-white font-semibold py-3 px-6 rounded-md transition duration-300">Search</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Service Categories -->
+  <section class="py-16 bg-white">
+    <div class="container mx-auto px-4">
+      <h2 class="text-3xl font-bold text-center mb-12">Browse Service Categories</h2>
+      <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+        <% categories.forEach(category => { %>
+          <a href="/search?category=<%= category.name %>" class="bg-gray-50 hover:bg-gray-100 rounded-lg p-6 text-center transition duration-300 shadow-sm hover:shadow-md">
+            <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+              <i class="fas <%= category.icon %> text-green-600 text-xl"></i>
+            </div>
+            <h3 class="text-lg font-semibold mb-2"><%= category.name %></h3>
+            <p class="text-gray-600 text-sm"><%= category.description.substring(0, 60) %>...</p>
+          </a>
+        <% }) %>
+      </div>
+    </div>
+  </section>
+
+  <!-- How It Works -->
+  <section class="py-16 bg-gray-50">
+    <div class="container mx-auto px-4">
+      <h2 class="text-3xl font-bold text-center mb-12">How Jiajiri Hub Works</h2>
+      <div class="grid md:grid-cols-3 gap-8">
+        <div class="bg-white rounded-lg shadow-md p-6 text-center">
+          <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+            <i class="fas fa-search text-green-600 text-xl"></i>
+          </div>
+          <h3 class="text-xl font-semibold mb-3">1. Search</h3>
+          <p class="text-gray-600">Find skilled workers in your area by searching for the service you need.</p>
+        </div>
+        <div class="bg-white rounded-lg shadow-md p-6 text-center">
+          <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+            <i class="fas fa-calendar-check text-green-600 text-xl"></i>
+          </div>
+          <h3 class="text-xl font-semibold mb-3">2. Book</h3>
+          <p class="text-gray-600">Send a job request to the worker with details about your service needs.</p>
+        </div>
+        <div class="bg-white rounded-lg shadow-md p-6 text-center">
+          <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+            <i class="fas fa-star text-green-600 text-xl"></i>
+          </div>
+          <h3 class="text-xl font-semibold mb-3">3. Review</h3>
+          <p class="text-gray-600">After the job is completed, rate and review the worker to help others.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Featured Workers -->
+  <section class="py-16 bg-white">
+    <div class="container mx-auto px-4">
+      <h2 class="text-3xl font-bold text-center mb-12">Top Rated Service Providers</h2>
+      <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <% featuredWorkers.forEach(worker => { %>
+          <div class="bg-white border border-gray-200 rounded-lg overflow-hidden shadow-md hover:shadow-lg transition duration-300">
+            <div class="h-48 bg-gray-200 relative">
+              <% if (worker.image_url) { %>
+                <img src="<%= worker.image_url %>" alt="<%= worker.name %>" class="w-full h-full object-cover">
+              <% } else { %>
+                <div class="w-full h-full flex items-center justify-center bg-gray-300">
+                  <i class="fas fa-user text-gray-400 text-5xl"></i>
+                </div>
+              <% } %>
+              <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black to-transparent p-4">
+                <h3 class="text-white text-xl font-semibold"><%= worker.name %></h3>
+                <p class="text-white opacity-90"><%= worker.service_category %></p>
+              </div>
+            </div>
+            <div class="p-4">
+              <div class="flex items-center mb-3">
+                <div class="flex text-yellow-400">
+                  <% for (let i = 1; i <= 5; i++) { %>
+                    <% if (i <= Math.round(worker.average_rating)) { %>
+                      <i class="fas fa-star"></i>
+                    <% } else { %>
+                      <i class="far fa-star"></i>
+                    <% } %>
+                  <% } %>
+                </div>
+<span class="text-gray-600 ml-2"><%= typeof worker.average_rating === 'number' ? worker.average_rating.toFixed(1) : Number(worker.average_rating).toFixed(1) %> (<%= worker.review_count %> reviews)</span>
+
+              </div>
+              <p class="text-gray-600 mb-4"><%= worker.bio ? worker.bio.substring(0, 100) + '...' : 'No bio available' %></p>
+              <div class="flex items-center justify-between">
+                <span class="text-gray-700 font-medium"><%= worker.price_range %></span>
+                <a href="/worker/<%= worker.id %>" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-md font-medium transition duration-300">View Profile</a>
+              </div>
+            </div>
+          </div>
+        <% }) %>
+      </div>
+      <div class="text-center mt-10">
+        <a href="/search" class="inline-block bg-green-600 hover:bg-green-700 text-white font-semibold py-3 px-8 rounded-md transition duration-300">View All Workers</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Testimonials -->
+  <section class="py-16 bg-gray-50">
+    <div class="container mx-auto px-4">
+      <h2 class="text-3xl font-bold text-center mb-12">What Our Users Say</h2>
+      <div class="grid md:grid-cols-3 gap-8">
+        <% testimonials.forEach(testimonial => { %>
+          <div class="bg-white rounded-lg shadow-md p-6">
+            <div class="flex text-yellow-400 mb-4">
+              <% for (let i = 1; i <= 5; i++) { %>
+                <% if (i <= testimonial.rating) { %>
+                  <i class="fas fa-star"></i>
+                <% } else { %>
+                  <i class="far fa-star"></i>
+                <% } %>
+              <% } %>
+            </div>
+            <p class="text-gray-600 mb-6 italic">"<%= testimonial.comment %>"</p>
+            <div class="flex items-center">
+              <div class="w-12 h-12 bg-gray-300 rounded-full mr-4 flex items-center justify-center">
+                <i class="fas fa-user text-gray-500"></i>
+              </div>
+              <div>
+                <h4 class="font-semibold"><%= testimonial.client_name %></h4>
+                <p class="text-gray-500 text-sm">Client for <%= testimonial.service_category %></p>
+              </div>
+            </div>
+          </div>
+        <% }) %>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA Section -->
+  <section class="py-16 bg-green-600 text-white">
+    <div class="container mx-auto px-4 text-center">
+      <h2 class="text-3xl font-bold mb-6">Join Jiajiri Hub Today</h2>
+      <p class="text-xl mb-8 max-w-3xl mx-auto">Whether you're looking for work or need to hire skilled professionals, Jiajiri Hub connects you with the right people.</p>
+      <div class="flex flex-col sm:flex-row gap-4 justify-center">
+        <a href="/register" class="bg-white text-green-600 hover:bg-gray-100 font-semibold py-3 px-8 rounded-md transition duration-300">Sign Up Now</a>
+        <a href="/about" class="bg-transparent border-2 border-white text-white hover:bg-white hover:text-green-600 font-semibold py-3 px-8 rounded-md transition duration-300">Learn More</a>
+      </div>
+    </div>
+  </section>
+
+  <%- include('partials/footer') %>
+</body>
+</html>

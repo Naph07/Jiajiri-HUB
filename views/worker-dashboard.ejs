@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <%- include('partials/head') %>
+  <title><%= title %></title>
+</head>
+<body class="bg-gray-50">
+  <%- include('partials/navbar') %>
+
+  <div class="container mx-auto px-4 py-8">
+    <div class="flex flex-col md:flex-row gap-8">
+      <!-- Sidebar -->
+      <div class="w-full md:w-1/4">
+        <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+          <div class="flex flex-col items-center text-center mb-6">
+            <div class="w-24 h-24 bg-gray-300 rounded-full mb-4 overflow-hidden">
+              <% if (profile.image_url) { %>
+                <img src="<%= profile.image_url %>" alt="<%= user.name %>" class="w-full h-full object-cover">
+              <% } else { %>
+                <div class="w-full h-full flex items-center justify-center">
+                  <i class="fas fa-user text-gray-400 text-4xl"></i>
+                </div>
+              <% } %>
+            </div>
+            <h2 class="text-xl font-bold"><%= user.name %></h2>
+            <p class="text-gray-600"><%= profile.service_category %></p>
+            <div class="flex items-center mt-2">
+              <div class="flex text-yellow-400">
+                <% for (let i = 1; i <= 5; i++) { %>
+                  <% if (i <= Math.round(profile.average_rating)) { %>
+                    <i class="fas fa-star"></i>
+                  <% } else { %>
+                    <i class="far fa-star"></i>
+                  <% } %>
+                <% } %>
+              </div>
+<span class="text-gray-600 ml-2"><%= typeof profile.average_rating === 'number' ? profile.average_rating.toFixed(1) : Number(profile.average_rating).toFixed(1) %></span>
+            </div>
+            <% if (!profile.is_verified) { %>
+              <div class="mt-3 text-sm text-gray-500">
+                <% if (profile.id_number) { %>
+                  <span class="bg-yellow-100 text-yellow-800 px-2 py-1 rounded-full">Verification Pending</span>
+                <% } else { %>
+                  <span class="bg-gray-100 text-gray-800 px-2 py-1 rounded-full">Not Verified</span>
+                <% } %>
+              </div>
+            <% } else { %>
+              <div class="mt-3 text-sm">
+                <span class="bg-green-100 text-green-800 px-2 py-1 rounded-full">Verified</span>
+              </div>
+            <% } %>
+          </div>
+          
+          <div class="border-t pt-4">
+            <a href="/profile/edit" class="block bg-green-600 hover:bg-green-700 text-white text-center font-semibold py-2 px-4 rounded-md transition duration-300 mb-3">Edit Profile</a>
+            <a href="/worker/<%= profile.id %>" class="block bg-gray-200 hover:bg-gray-300 text-gray-800 text-center font-semibold py-2 px-4 rounded-md transition duration-300">View Public Profile</a>
+          </div>
+        </div>
+        
+        <div class="bg-white rounded-lg shadow-md p-6">
+          <h3 class="text-lg font-semibold mb-4">Account Information</h3>
+          <ul class="space-y-3">
+            <li class="flex">
+              <span class="text-gray-600 w-24">Email:</span>
+              <span class="font-medium"><%= user.email %></span>
+            </li>
+            <li class="flex">
+              <span class="text-gray-600 w-24">Location:</span>
+              <span class="font-medium"><%= profile.location || 'Not set' %></span>
+            </li>
+            <li class="flex">
+              <span class="text-gray-600 w-24">Price Range:</span>
+              <span class="font-medium"><%= profile.price_range || 'Not set' %></span>
+            </li>
+            <li class="flex">
+              <span class="text-gray-600 w-24">Availability:</span>
+              <span class="font-medium"><%= profile.availability || 'Not set' %></span>
+            </li>
+          </ul>
+        </div>
+      </div>
+      
+      <!-- Main Content -->
+      <div class="w-full md:w-3/4">
+        <!-- Pending Job Requests -->
+        <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+          <h3 class="text-xl font-semibold mb-4">Pending Job Requests</h3>
+          
+          <% if (pendingJobs.length === 0) { %>
+            <div class="text-center py-8 text-gray-500">
+              <i class="fas fa-inbox text-4xl mb-3"></i>
+              <p>No pending job requests at the moment.</p>
+            </div>
+          <% } else { %>
+            <div class="overflow-x-auto">
+              <table class="min-w-full">
+                <thead>
+                  <tr class="bg-gray-50">
+                    <th class="px-4 py-2 text-left text-gray-700">Client</th>
+                    <th class="px-4 py-2 text-left text-gray-700">Description</th>
+                    <th class="px-4 py-2 text-left text-gray-700">Location</th>
+                    <th class="px-4 py-2 text-left text-gray-700">Date</th>
+                    <th class="px-4 py-2 text-left text-gray-700">Actions</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y">
+                  <% pendingJobs.forEach(job => { %>
+                    <tr>
+                      <td class="px-4 py-3"><%= job.client_name %></td>
+                      <td class="px-4 py-3"><%= job.description.substring(0, 50) %>...</td>
+                      <td class="px-4 py-3"><%= job.location %></td>
+                      <td class="px-4 py-3"><%= new Date(job.scheduled_time).toLocaleDateString() %></td>
+                      <td class="px-4 py-3">
+                        <div class="flex space-x-2">
+                          <form action="/job/<%= job.id %>/status" method="POST">
+                            <input type="hidden" name="status" value="accepted">
+                            <button type="submit" class="bg-green-600 hover:bg-green-700 text-white px-3 py-1 rounded-md text-sm transition duration-300">Accept</button>
+                          </form>
+                          <form action="/job/<%= job.id %>/status" method="POST">
+                            <input type="hidden" name="status" value="rejected">
+                            <button type="submit" class="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded-md text-sm transition duration-300">Reject</button>
+                          </form>
+                        </div>
+                      </td>
+                    </tr>
+                  <% }) %>
+                </tbody>
+              </table>
+            </div>
+          <% } %>
+        </div>
+        
+        <!-- Active Jobs -->
+        <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+          <h3 class="text-xl font-semibold mb-4">Active Jobs</h3>
+          
+          <% if (activeJobs.length === 0) { %>
+            <div class="text-center py-8 text-gray-500">
+              <i class="fas fa-clipboard-list text-4xl mb-3"></i>
+              <p>No active jobs at the moment.</p>
+            </div>
+          <% } else { %>
+            <div class="grid gap-4">
+              <% activeJobs.forEach(job => { %>
+                <div class="border border-gray-200 rounded-lg p-4">
+                  <div class="flex flex-col md:flex-row md:justify-between md:items-center">
+                    <div>
+                      <h4 class="font-semibold text-lg"><%= job.description.substring(0, 100) %></h4>
+                      <p class="text-gray-600 mt-1">Client: <%= job.client_name %> | Phone: <%= job.client_phone %></p>
+                      <p class="text-gray-600">Location: <%= job.location %></p>
+                      <p class="text-gray-600">Scheduled: <%= new Date(job.scheduled_time).toLocaleString() %></p>
+                    </div>
+                    <div class="mt-4 md:mt-0">
+                      <form action="/job/<%= job.id %>/status" method="POST">
+                        <input type="hidden" name="status" value="completed">
+                        <button type="submit" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-md transition duration-300">Mark as Completed</button>
+                      </form>
+                    </div>
+                  </div>
+                </div>
+              <% }) %>
+            </div>
+          <% } %>
+        </div>
+        
+        <!-- Completed Jobs -->
+        <div class="bg-white rounded-lg shadow-md p-6">
+          <h3 class="text-xl font-semibold mb-4">Recent Completed Jobs</h3>
+          
+          <% if (completedJobs.length === 0) { %>
+            <div class="text-center py-8 text-gray-500">
+              <i class="fas fa-check-circle text-4xl mb-3"></i>
+              <p>No completed jobs yet.</p>
+            </div>
+          <% } else { %>
+            <div class="grid gap-4">
+              <% completedJobs.forEach(job => { %>
+                <div class="border border-gray-200 rounded-lg p-4">
+                  <div class="flex flex-col md:flex-row md:justify-between md:items-start">
+                    <div>
+                      <h4 class="font-semibold"><%= job.description.substring(0, 100) %></h4>
+                      <p class="text-gray-600 mt-1">Client: <%= job.client_name %></p>
+                      <p class="text-gray-600">Completed: <%= new Date(job.completed_at).toLocaleDateString() %></p>
+                    </div>
+                    <div class="mt-3 md:mt-0 md:ml-4">
+                      <% if (job.rating) { %>
+                        <div class="flex items-center">
+                          <div class="flex text-yellow-400">
+                            <% for (let i = 1; i <= 5; i++) { %>
+                              <% if (i <= job.rating) { %>
+                                <i class="fas fa-star"></i>
+                              <% } else { %>
+                                <i class="far fa-star"></i>
+                              <% } %>
+                            <% } %>
+                          </div>
+                          <span class="ml-2"><%= job.rating %>/5</span>
+                        </div>
+                        <% if (job.comment) { %>
+                          <p class="text-gray-600 mt-1 italic">"<%= job.comment %>"</p>
+                        <% } %>
+                      <% } else { %>
+                        <span class="text-gray-500">No review yet</span>
+                      <% } %>
+                    </div>
+                  </div>
+                </div>
+              <% }) %>
+            </div>
+          <% } %>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <%- include('partials/footer') %>
+</body>
+</html>
